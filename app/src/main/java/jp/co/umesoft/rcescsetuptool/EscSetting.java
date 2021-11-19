@@ -55,7 +55,7 @@ public class EscSetting {
             setting.response= Integer.parseInt(loader.getValue("DATA0", "RESPONSE"));
             setting.curLimit= Integer.parseInt(loader.getValue("DATA0", "CUR.LIM"));
 
-            for(int i = 0; i < 32; i++)
+            for(int i = 0; i < setting.freq.length; i++)
             {
                 setting.freq[i] = Integer.parseInt(loader.getValue("DATA0", "FREQ" + i));
             }
@@ -90,7 +90,7 @@ public class EscSetting {
             bw.write("RESPONSE=" + response + "\n");
             bw.write("CUR.LIM=" + curLimit + "\n");
 
-            for(int i = 0; i < 32; i++)
+            for(int i = 0; i < freq.length; i++)
             {
                 bw.write("FREQ" + i + "=" + freq[i] + "\n");
             }
