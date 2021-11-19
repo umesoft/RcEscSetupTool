@@ -19,6 +19,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -33,8 +34,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SerialInputOutputManager.Listener  {
-
+public class MainActivity extends AppCompatActivity implements SerialInputOutputManager.Listener
+{
     private String TAG = "MainActivity";
 
     private UsbSerialPort port = null;
@@ -251,22 +252,53 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         writeButton.setEnabled(false);
     }
 
+    private String currFilename = "";
+
     private void loadSetting()
     {
         if (!isExternalStorageReadable()) {
             return;
         }
 
-        String filename = "test.kpd";
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.filename);
 
-        String path = getExternalFilesDir(null).getPath() + "/" + filename;
-        EscSetting newSetting = EscSetting.load(path);
-        if (newSetting == null) {
-            return;
-        }
+        EditText textValue = (EditText)dialog.findViewById(R.id.textValue);
+        textValue.setText(currFilename);
 
-        setting = newSetting;
-        UpdateSetting();
+        dialog.findViewById(R.id.updateButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String filename = textValue.getText().toString();
+                if (filename.isEmpty())
+                {
+                    return;
+                }
+                if (!filename.endsWith(".kpd"))
+                {
+                    filename += ".kpd";
+                }
+                String path = getExternalFilesDir(null).getPath() + "/" + filename;
+                EscSetting newSetting = EscSetting.load(path);
+                if (newSetting == null) {
+                    return;
+                }
+
+                currFilename = filename;
+                setting = newSetting;
+                UpdateSetting();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void saveSetting()
@@ -275,10 +307,39 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
             return;
         }
 
-        String filename = "test.kpd";
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.filename);
 
-        String path = getExternalFilesDir(null).getPath();
-        setting.save(new File(path, filename));
+        EditText textValue = (EditText)dialog.findViewById(R.id.textValue);
+        textValue.setText(currFilename);
+
+        dialog.findViewById(R.id.updateButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String filename = textValue.getText().toString();
+                if (filename.isEmpty())
+                {
+                    return;
+                }
+                if (!filename.endsWith(".kpd"))
+                {
+                    filename += ".kpd";
+                }
+                String path = getExternalFilesDir(null).getPath();
+                setting.save(new File(path, filename));
+                currFilename = filename;
+                dialog.dismiss();
+            }
+        });
+
+        dialog.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     public boolean isExternalStorageWritable() {
@@ -464,7 +525,8 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
             }
         });
 
-        dialog.show();    }
+        dialog.show();
+    }
 
     private void showBreakFreq() {
         Dialog dialog = new Dialog(this);
