@@ -1,5 +1,15 @@
 package jp.co.umesoft.rcescsetuptool;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+
+import jp.team.e_works.inifilelib.IniFileLoader;
+
 public class EscSetting {
 
     public static final int MIN_BRK_FQ = 0;
@@ -22,19 +32,89 @@ public class EscSetting {
     public int cutVt = 0;
     public int response = 0;
     public int curLimit = 0;
-    public int [] freq = { 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f };
+    public int [] freq = { 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35 };
 
     public EscSetting()
     {
     }
 
-    public boolean load(String filepath)
+    public static EscSetting load(String filepath)
     {
-        return true;
+        IniFileLoader loader = new IniFileLoader();
+        if (!loader.load(filepath))
+        {
+            return null;
+        }
+
+        EscSetting setting = new EscSetting();
+
+        try {
+            setting.mode = Integer.parseInt(loader.getValue("DATA0", "MODE"));
+            setting.brkFq= Integer.parseInt(loader.getValue("DATA0", "BRK.FQ"));
+            setting.cutVt= Integer.parseInt(loader.getValue("DATA0", "CUT.VT"));
+            setting.response= Integer.parseInt(loader.getValue("DATA0", "RESPONSE"));
+            setting.curLimit= Integer.parseInt(loader.getValue("DATA0", "CUR.LIM"));
+
+            for(int i = 0; i < 32; i++)
+            {
+                setting.freq[i] = Integer.parseInt(loader.getValue("DATA0", "FREQ" + i));
+            }
+        }
+        catch(Exception e)
+        {
+            return null;
+        }
+
+        return setting;
     }
 
-    public boolean save(String filepath)
+    public boolean save(File file)
     {
+        FileOutputStream fo = null;
+        OutputStreamWriter osw = null;
+        BufferedWriter bw = null;
+
+        try {
+            fo = new FileOutputStream(file);
+            osw = new OutputStreamWriter(fo,"SHIFT_JIS");
+            bw = new BufferedWriter(osw);
+
+            bw.write("[VFS-1]\n");
+            bw.write("DATA=4\n");
+            bw.write("[DATA0]\n");
+            bw.write("NAME=DATA1\n");
+            bw.write("VER=1\n");
+            bw.write("MODE=" + mode + "\n");
+            bw.write("BRK.FQ=" + brkFq + "\n");
+            bw.write("CUT.VT=" + cutVt + "\n");
+            bw.write("RESPONSE=" + response + "\n");
+            bw.write("CUR.LIM=" + curLimit + "\n");
+
+            for(int i = 0; i < 32; i++)
+            {
+                bw.write("FREQ" + i + "=" + freq[i] + "\n");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        finally
+        {
+            if (bw != null)
+            {
+                try
+                {
+                    bw.close();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        }
         return true;
     }
 

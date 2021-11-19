@@ -39,4 +39,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     compileOnly 'com.google.android.wearable:wearable:2.6.0'
+
+    compile 'jp.e_works:IniFileController:0.1.0'
 }

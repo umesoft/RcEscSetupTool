@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -70,6 +72,20 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         currCurrentLimitter = (TextView)findViewById(R.id.currCurrentLimitter);
 
         UpdateSetting();
+
+        findViewById(R.id.loadButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadSetting();
+            }
+        });
+
+        findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveSetting();
+            }
+        });
 
         readButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,6 +249,47 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     {
         readButton.setEnabled(false);
         writeButton.setEnabled(false);
+    }
+
+    private void loadSetting()
+    {
+        if (!isExternalStorageReadable()) {
+            return;
+        }
+
+        String filename = "test.kpd";
+
+        String path = getExternalFilesDir(null).getPath() + "/" + filename;
+        EscSetting newSetting = EscSetting.load(path);
+        if (newSetting == null) {
+            return;
+        }
+
+        setting = newSetting;
+        UpdateSetting();
+    }
+
+    private void saveSetting()
+    {
+        if (!isExternalStorageWritable()) {
+            return;
+        }
+
+        String filename = "test.kpd";
+
+        String path = getExternalFilesDir(null).getPath();
+        setting.save(new File(path, filename));
+    }
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return (Environment.MEDIA_MOUNTED.equals(state));
+    }
+
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        return (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
     }
 
     private void readEscSetting()
