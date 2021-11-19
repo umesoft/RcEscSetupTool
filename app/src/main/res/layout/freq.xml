@@ -51,12 +51,32 @@
 		        android:layout_height="wrap_content"
 	            android:layout_marginTop="8dp"
 			/>
+		    <LinearLayout
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="horizontal"
+			>
+				<Button
+			        android:id="@+id/minusX"
+					android:layout_width="40dp"
+					android:layout_height="wrap_content"
+					android:text="-">
+				</Button>
+				<Button
+			        android:id="@+id/plusX"
+					android:layout_width="40dp"
+					android:layout_height="wrap_content"
+		            android:layout_marginLeft="16dp"
+					android:text="+">
+				</Button>
+			</LinearLayout>
 	        <TextView
 		        android:id="@+id/textY"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_gravity="center_horizontal"
-	            android:layout_marginTop="16dp"
+	            android:layout_marginTop="8dp"
 	            android:text="" />
 		    <SeekBar
 		        android:id="@+id/seekY"
@@ -64,6 +84,26 @@
 		        android:layout_height="wrap_content"
 	            android:layout_marginTop="8dp"
 			/>
+		    <LinearLayout
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_horizontal"
+		        android:orientation="horizontal"
+			>
+				<Button
+			        android:id="@+id/minusY"
+					android:layout_width="40dp"
+					android:layout_height="wrap_content"
+					android:text="-">
+				</Button>
+				<Button
+			        android:id="@+id/plusY"
+					android:layout_width="40dp"
+					android:layout_height="wrap_content"
+		            android:layout_marginLeft="16dp"
+					android:text="+">
+				</Button>
+			</LinearLayout>
 		</LinearLayout>	
 	</LinearLayout>	
 	

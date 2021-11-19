@@ -30,10 +30,12 @@ public class FreqGraphView extends View {
         int height = canvas.getHeight();
 
         int block_size_x = width / 32;
-        int block_size_y = height / 64;
+
+        int block_pos_y = height / 64;
+        int block_size_y = height / 16;
 
         int start_x = (width - block_size_x * 32) / 2;
-        int start_Y = height - block_size_y * 64;
+        int start_Y = height - (block_pos_y * 63 + block_size_y);
 
         Paint paint = new Paint();
         paint.setColor(Color.argb(255, 255, 190, 0));
@@ -41,7 +43,7 @@ public class FreqGraphView extends View {
         for(int i = 0; i < 32; i++) {
 
             int x = start_x + i * block_size_x;
-            int y = start_Y + freq[i] * block_size_y;
+            int y = start_Y + freq[i] * block_pos_y;
 
             canvas.drawRect(x, y, x + block_size_x, y + block_size_y, paint);
         }

@@ -328,6 +328,25 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
             }
         });
 
+        dialog.findViewById(R.id.minusX).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = seekX.getProgress();
+                if (seekX.getMin() < pos) {
+                    seekX.setProgress(pos - 1);
+                }
+            }
+        });
+        dialog.findViewById(R.id.plusX).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = seekX.getProgress();
+                if (pos < seekX.getMax()) {
+                    seekX.setProgress(pos + 1);
+                }
+            }
+        });
+
         int posY = freqGraph.freq[0];
         textY.setText(String.format("No.%d", posY + 1));
         seekY.setMin(0);
@@ -350,6 +369,25 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        dialog.findViewById(R.id.minusY).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = seekY.getProgress();
+                if (seekY.getMin() < pos) {
+                    seekY.setProgress(pos - 1);
+                }
+            }
+        });
+        dialog.findViewById(R.id.plusY).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = seekY.getProgress();
+                if (pos < seekY.getMax()) {
+                    seekY.setProgress(pos + 1);
+                }
             }
         });
 
